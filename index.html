@@ -3,194 +3,138 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SAQR SYSTEM | 2026</title>
+<title>SAQR SYSTEM FIXED</title>
 
 <style>
-:root { --gold:#d4af37; --bg:#050505; --card:#121212; --green:#4CAF50; --red:#f44336; --txt:#fff; }
+body { background:#050505; color:#fff; font-family:Arial; padding:20px; }
+input,button { width:100%; padding:10px; margin:5px 0; }
+button { cursor:pointer; }
 
-body { font-family:Segoe UI; background:var(--bg); color:var(--txt); margin:0; padding-bottom:120px; }
-
-header { padding:20px; text-align:center; background:#111; border-bottom:2px solid var(--gold); }
-#liveTime { font-size:28px; font-weight:bold; color:var(--gold); }
-
-nav { display:flex; justify-content:center; gap:8px; flex-wrap:wrap;
-background:#111; padding:10px; position:sticky; top:0; z-index:100; }
-
-nav button { background:rgba(255,255,255,0.05); border:1px solid #333;
-color:#fff; padding:10px; border-radius:8px; cursor:pointer; font-weight:bold; }
-
-nav button.active { background:var(--gold); color:#000; }
-
-#notifBtn.on { border-color:var(--green); color:var(--green); }
-#notifBtn.off { border-color:var(--red); color:var(--red); }
-
-.container { max-width:800px; margin:20px auto; padding:0 15px; }
-
-.card { background:var(--card); padding:20px; border-radius:15px; margin-bottom:20px; }
-
-.section-title { color:var(--gold); border-right:4px solid var(--gold); padding-right:10px; }
-
-input { width:100%; padding:12px; margin-bottom:10px;
-background:#1a1a1a; border:1px solid #333; color:#fff; border-radius:8px; }
-
-.btn-add { width:100%; padding:15px; background:var(--gold);
-border:none; border-radius:8px; font-weight:bold; cursor:pointer; }
-
-.page { display:none; }
-.active-page { display:block; }
-
-.task-item { display:flex; justify-content:space-between; padding:15px;
-background:#181818; border-radius:12px; margin-bottom:10px; }
-
-.task-item.done { opacity:0.6; }
+.task { background:#111; padding:10px; margin:5px 0; border-radius:8px; }
+.on { color:green; }
+.off { color:red; }
 </style>
 </head>
 
 <body>
 
-<header>
-<div id="liveTime">00:00:00</div>
-<div style="color:var(--gold)">SAQR SYSTEM 2026</div>
-</header>
+<h2>SAQR TASK SYSTEM</h2>
 
-<nav>
-<button onclick="switchPage('main')" id="nav-main" class="active">🏠 المهام</button>
-<button onclick="switchPage('add')" id="nav-add">➕ إضافة</button>
-<button id="notifBtn" onclick="toggleNotifs()">🔕 الإشعارات</button>
-</nav>
+<button id="notifBtn" onclick="toggleNotifications()">🔕 الإشعارات</button>
 
-<div class="container">
+<hr>
 
-<div id="page-add" class="page">
-<div class="card">
-<h3>إضافة مهمة</h3>
-<input id="taskName" placeholder="اسم المهمة">
-<input type="date" id="taskDate">
-<input type="time" id="taskTime">
-<button class="btn-add" onclick="saveTask()">حفظ</button>
-</div>
-</div>
+<input id="name" placeholder="اسم المهمة">
+<input type="date" id="date">
+<input type="time" id="time">
+<button onclick="addTask()">حفظ المهمة</button>
 
-<div id="page-main" class="page active-page">
-<h3 class="section-title">مهام اليوم</h3>
-<div id="list-today"></div>
+<hr>
 
-<h3 class="section-title">مهام مستقبلية</h3>
-<div id="list-future"></div>
-</div>
-
-</div>
+<h3>المهام</h3>
+<div id="list"></div>
 
 <script>
 
-let tasks = JSON.parse(localStorage.getItem('tasks')) || [];
-let isNotifActive = JSON.parse(localStorage.getItem('notif')) || false;
+let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
+let notifEnabled = JSON.parse(localStorage.getItem("notif")) || false;
 
-/* 🔔 تحديث الزر */
-function updateNotifUI() {
-const btn = document.getElementById("notifBtn");
+/* 🔔 تحديث زر الإشعارات */
+function updateBtn(){
+document.getElementById("notifBtn").innerText =
+notifEnabled ? "🔔 الإشعارات مفعلة" : "🔕 الإشعارات مغلقة";
+}
 
-if (Notification.permission === "denied") {
-btn.innerText = "🚫 الإشعارات مرفوضة";
-btn.className = "";
+/* 🔔 تشغيل الإشعارات */
+function toggleNotifications(){
+
+if(Notification.permission === "denied"){
+alert("الإشعارات مقفولة من المتصفح");
 return;
 }
 
-btn.innerText = isNotifActive ? "🔔 الإشعارات: مفعلة" : "🔕 الإشعارات: مغلقة";
-btn.className = isNotifActive ? "on" : "off";
-}
-
-/* 🔔 تشغيل/إيقاف */
-function toggleNotifs() {
-
-if (Notification.permission === "denied") {
-alert("الإشعارات مقفولة من المتصفح — افتح الإعدادات");
-return;
-}
-
-if (Notification.permission !== "granted") {
-Notification.requestPermission().then(p => {
-if (p === "granted") {
-isNotifActive = true;
-localStorage.setItem("notif", JSON.stringify(true));
-new Notification("SAQR SYSTEM", { body:"تم تفعيل الإشعارات" });
-updateNotifUI();
+if(Notification.permission !== "granted"){
+Notification.requestPermission().then(p=>{
+if(p==="granted"){
+notifEnabled = true;
+localStorage.setItem("notif", true);
+new Notification("SAQR", {body:"تم التفعيل"});
+updateBtn();
 }
 });
 return;
 }
 
-isNotifActive = !isNotifActive;
-localStorage.setItem("notif", JSON.stringify(isNotifActive));
-updateNotifUI();
+notifEnabled = !notifEnabled;
+localStorage.setItem("notif", notifEnabled);
+updateBtn();
 }
 
-/* ⏰ فحص الوقت */
-setInterval(() => {
+/* 💾 حفظ المهمة */
+function addTask(){
 
-document.getElementById("liveTime").innerText =
-new Date().toLocaleTimeString("ar-EG");
+let n = document.getElementById("name").value;
+let d = document.getElementById("date").value;
+let t = document.getElementById("time").value;
 
-if (!isNotifActive) return;
+if(!n || !d || !t){
+alert("كمل البيانات");
+return;
+}
+
+tasks.push({
+id:Date.now(),
+name:n,
+date:d,
+time:t,
+done:false,
+notified:false
+});
+
+localStorage.setItem("tasks", JSON.stringify(tasks));
+
+document.getElementById("name").value="";
+render();
+}
+
+/* 📌 عرض */
+function render(){
+document.getElementById("list").innerHTML =
+tasks.map(t=>`
+<div class="task">
+${t.name}<br>
+${t.date} - ${t.time}
+</div>
+`).join("");
+}
+
+/* ⏰ فحص الإشعارات */
+setInterval(()=>{
+
+if(!notifEnabled) return;
 
 let now = new Date();
 let d = now.toISOString().split("T")[0];
 let t = now.toTimeString().slice(0,5);
 
-tasks.forEach(task => {
-if (task.date === d && task.time === t && !task.notified) {
+tasks.forEach(task=>{
+if(task.date===d && task.time===t && !task.notified){
 
 task.notified = true;
 localStorage.setItem("tasks", JSON.stringify(tasks));
 
-if (Notification.permission === "granted") {
-new Notification("تنبيه مهمة", {
+if(Notification.permission==="granted"){
+new Notification("تنبيه", {
 body: task.name
 });
 }
 }
 });
 
-}, 1000);
-
-/* 🧠 حفظ */
-function saveTask() {
-tasks.push({
-id:Date.now(),
-name:taskName.value,
-date:taskDate.value,
-time:taskTime.value,
-done:false,
-notified:false
-});
-
-localStorage.setItem("tasks", JSON.stringify(tasks));
-switchPage('main');
-render();
-}
-
-/* 📌 عرض */
-function render() {
-
-let today = new Date().toISOString().split("T")[0];
-
-list_today.innerHTML =
-tasks.filter(t=>t.date===today)
-.map(t=>`<div class="task-item">${t.name}</div>`).join("") || "لا يوجد";
-
-list_future.innerHTML =
-tasks.filter(t=>t.date>today)
-.map(t=>`<div class="task-item">${t.name}</div>`).join("") || "لا يوجد";
-}
-
-/* 📄 صفحات */
-function switchPage(p){
-document.querySelectorAll(".page").forEach(e=>e.classList.remove("active-page"));
-document.getElementById("page-"+p).classList.add("active-page");
-}
+},1000);
 
 /* 🚀 تشغيل أولي */
-updateNotifUI();
+updateBtn();
 render();
 
 </script>
