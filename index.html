@@ -14,38 +14,27 @@
 
         header { padding: 20px; text-align: center; background: #111; border-bottom: 2px solid var(--gold); }
         #liveTime { font-size: 28px; font-weight: bold; color: var(--gold); }
-        .progress-bar { font-size: 14px; color: var(--green); margin-top: 5px; }
 
-        nav { display: flex; justify-content: center; background: #111; padding: 10px; gap: 8px; position: sticky; top: 0; z-index: 100; border-bottom: 1px solid #222; flex-wrap: wrap; }
-        nav button { background: rgba(255,255,255,0.05); border: 1px solid #333; color: #fff; padding: 8px 12px; border-radius: 8px; cursor: pointer; font-weight: bold; transition: 0.3s; font-size: 13px; }
+        nav { display: flex; justify-content: center; background: #111; padding: 10px; gap: 8px; position: sticky; top: 0; z-index: 100; border-bottom: 1px solid #222; }
+        nav button { background: rgba(255,255,255,0.05); border: 1px solid #333; color: #fff; padding: 10px; border-radius: 8px; cursor: pointer; font-weight: bold; }
         nav button.active { background: var(--gold); color: #000; }
         
-        /* زر الإشعارات الملون */
-        #notifToggleBtn.enabled { border-color: var(--green); color: var(--green); }
-        #notifToggleBtn.disabled { border-color: var(--red); color: var(--red); }
+        #notifToggleBtn.enabled { color: var(--green); border-color: var(--green); }
+        #notifToggleBtn.disabled { color: var(--red); border-color: var(--red); }
 
         .container { max-width: 800px; margin: 20px auto; padding: 0 15px; }
         .card { background: var(--card); padding: 20px; border-radius: 15px; border: 1px solid #222; margin-bottom: 20px; }
 
-        input { background: #1a1a1a; border: 1px solid #333; color: #fff; padding: 12px; border-radius: 8px; outline: none; width: 100%; box-sizing: border-box; margin-bottom: 10px; }
-        .btn-add { background: var(--gold); color: #000; border: none; padding: 15px; border-radius: 8px; font-weight: bold; cursor: pointer; width: 100%; font-size: 16px; }
+        input { background: #1a1a1a; border: 1px solid #333; color: #fff; padding: 12px; border-radius: 8px; width: 100%; box-sizing: border-box; margin-bottom: 10px; }
+        .btn-add { background: var(--gold); color: #000; border: none; padding: 15px; border-radius: 8px; font-weight: bold; cursor: pointer; width: 100%; }
 
         .task-item { 
             display: flex; justify-content: space-between; align-items: center; 
             background: #181818; padding: 15px; border-radius: 12px; margin-bottom: 12px;
-            border-right: 5px solid var(--blue); transition: 0.3s;
+            border-right: 5px solid var(--blue);
         }
         .task-item.done { border-right-color: var(--green); opacity: 0.6; }
-        .task-text { cursor: pointer; flex: 1; }
-        .task-text.striked h4 { text-decoration: line-through; color: #666; }
-        .task-text h4 { margin: 0; font-size: 18px; }
-
-        /* تنبيه داخلي */
-        #customAlert {
-            display: none; position: fixed; top: 20px; left: 50%; transform: translateX(-50%);
-            background: var(--gold); color: #000; padding: 20px; border-radius: 15px;
-            z-index: 9999; box-shadow: 0 0 30px rgba(212, 175, 55, 0.5); font-weight: bold; text-align: center;
-        }
+        .striked h4 { text-decoration: line-through; color: #666; }
 
         footer { background: #000; padding: 25px; text-align: center; border-top: 1px solid #1a1a1a; position: fixed; bottom: 0; width: 100%; }
         .footer-text { color: white; font-size: 15px; }
@@ -57,39 +46,30 @@
 </head>
 <body>
 
-<div id="customAlert">
-    <div id="alertMsg">حان موعد المهمة!</div>
-    <button onclick="closeAlert()" style="margin-top:10px; background:#000; color:#fff; border:none; padding:5px 15px; border-radius:5px; cursor:pointer;">إغلاق</button>
-</div>
-
 <header>
     <div id="liveTime">00:00:00</div>
-    <div class="progress-bar" id="completionRate">تم إنجاز 0 من 0 مهام</div>
+    <div style="font-size: 12px; color: var(--gold);">SAQR DESIGN SYSTEM</div>
 </header>
 
 <nav>
-    <button onclick="switchPage('today')" id="nav-today" class="active">📍 مهام اليوم</button>
+    <button onclick="switchPage('today')" id="nav-today" class="active">📍 مهامي</button>
     <button onclick="switchPage('future')" id="nav-future">📅 جدولة</button>
-    <button id="notifToggleBtn" onclick="toggleNotifications()" class="disabled">🔕 الإشعارات: معطلة</button>
+    <button id="notifToggleBtn" onclick="toggleNotifications()" class="disabled">🔕 تنبيهات النظام: معطلة</button>
 </nav>
 
 <div class="container">
     <div id="page-future" class="page">
         <div class="card">
-            <h3 style="color:var(--gold)">📅 إضافة مهمة مجدولة</h3>
-            <input type="text" id="taskName" placeholder="ماذا تريد أن تفعل؟">
-            <div style="display:flex; gap:10px;">
-                <input type="date" id="taskDate">
-                <input type="time" id="taskTime">
-            </div>
-            <button class="btn-add" onclick="addNewTask()">حفظ في الجدول</button>
+            <h3>جدولة مهمة جديدة</h3>
+            <input type="text" id="taskName" placeholder="عنوان المهمة">
+            <input type="date" id="taskDate">
+            <input type="time" id="taskTime">
+            <button class="btn-add" onclick="addNewTask()">حفظ المهمة</button>
         </div>
     </div>
 
     <div id="page-today" class="page active-page">
         <div id="list-today"></div>
-        <hr style="border:0; border-top:1px solid #222; margin:20px 0;">
-        <div id="list-future"></div>
     </div>
 </div>
 
@@ -98,141 +78,113 @@
 </footer>
 
 <script>
-    let tasks = JSON.parse(localStorage.getItem('SAQR_TASKS_V4')) || [];
-    let isNotifEnabled = JSON.parse(localStorage.getItem('SAQR_NOTIF_STATUS')) || false;
+    let tasks = JSON.parse(localStorage.getItem('SAQR_FINAL_DB')) || [];
+    let isNotifEnabled = JSON.parse(localStorage.getItem('SAQR_NOTIF_ON')) || false;
 
-    // تحديث الحالة عند التحميل
     window.onload = () => {
-        updateNotifBtnUI();
+        updateBtnUI();
         render();
     };
 
-    // تبديل حالة الإشعارات (تفعيل/إلغاء)
     function toggleNotifications() {
         if (!isNotifEnabled) {
             Notification.requestPermission().then(perm => {
                 if (perm === 'granted') {
                     isNotifEnabled = true;
-                    alert("تم تفعيل الإشعارات بنجاح ✅");
+                    alert("رائع! الإشعارات ستظهر الآن في شريط تنبيهات هاتفك ✅");
                 } else {
-                    alert("يرجى السماح بالإشعارات من إعدادات المتصفح أولاً ⚠️");
+                    alert("يجب السماح بالإشعارات من إعدادات المتصفح لتظهر في الشريط العلوي ⚠️");
                 }
-                saveStatus();
+                saveConfig();
             });
         } else {
             isNotifEnabled = false;
-            alert("تم تعطيل الإشعارات.. لن تصلك أي تنبيهات 🔕");
-            saveStatus();
+            saveConfig();
         }
     }
 
-    function saveStatus() {
-        localStorage.setItem('SAQR_NOTIF_STATUS', JSON.stringify(isNotifEnabled));
-        updateNotifBtnUI();
+    function saveConfig() {
+        localStorage.setItem('SAQR_NOTIF_ON', JSON.stringify(isNotifEnabled));
+        updateBtnUI();
     }
 
-    function updateNotifBtnUI() {
+    function updateBtnUI() {
         const btn = document.getElementById('notifToggleBtn');
-        if (isNotifEnabled) {
-            btn.innerText = "🔔 الإشعارات: مفعلة";
-            btn.className = "enabled";
-        } else {
-            btn.innerText = "🔕 الإشعارات: معطلة";
-            btn.className = "disabled";
-        }
+        btn.innerText = isNotifEnabled ? "🔔 تنبيهات النظام: مفعلة" : "🔕 تنبيهات النظام: معطلة";
+        btn.className = isNotifEnabled ? "enabled" : "disabled";
     }
 
-    // فحص المهام كل ثانية
+    // فحص المواعيد
     setInterval(() => {
         const now = new Date();
         document.getElementById('liveTime').innerText = now.toLocaleTimeString('ar-EG');
         
-        if (!isNotifEnabled) return; // توقف لو الإشعارات معطلة
+        if (!isNotifEnabled) return;
 
-        const curDate = now.toISOString().split('T')[0];
-        const curTime = now.getHours().toString().padStart(2, '0') + ":" + now.getMinutes().toString().padStart(2, '0');
-        
-        tasks.forEach(t => {
-            if (t.date === curDate && t.time === curTime && !t.notified) {
-                t.notified = true;
-                save();
+        const d = now.toISOString().split('T')[0];
+        const tNow = now.getHours().toString().padStart(2, '0') + ":" + now.getMinutes().toString().padStart(2, '0');
+
+        tasks.forEach(task => {
+            if (task.date === d && task.time === tNow && !task.notified) {
+                task.notified = true;
+                saveData();
                 
-                // تشغيل الصوت
-                new Audio('https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3').play().catch(()=>{});
-
-                // تنبيه خارجي
+                // إرسال الإشعار لشريط النظام
                 if (Notification.permission === "granted") {
-                    new Notification("تنبيه | SAQR DESIGN", { body: `حان موعد: ${t.name}` });
+                    const n = new Notification("SAQR DESIGN", {
+                        body: `تذكير: حان موعد ${task.name}`,
+                        icon: "https://cdn-icons-png.flaticon.com/512/311/311024.png",
+                        tag: "task-alert" // لمنع تكرار نفس الإشعار
+                    });
+                    
+                    // صوت تنبيه
+                    new Audio('https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3').play().catch(()=>{});
                 }
-
-                // تنبيه داخلي
-                document.getElementById('alertMsg').innerText = `⏰ موعد المهمة: ${t.name}`;
-                document.getElementById('customAlert').style.display = 'block';
             }
         });
     }, 1000);
-
-    function closeAlert() { document.getElementById('customAlert').style.display = 'none'; }
 
     function addNewTask() {
         const name = document.getElementById('taskName').value;
         const date = document.getElementById('taskDate').value;
         const time = document.getElementById('taskTime').value;
-        if(!name || !date || !time) return alert("يرجى ملء البيانات");
-
+        if(!name || !date || !time) return alert("اكمل البيانات");
         tasks.push({ id: Date.now(), name, date, time, done: false, notified: false });
-        save();
+        saveData();
         switchPage('today');
     }
 
     function toggleDone(id) {
         tasks = tasks.map(t => t.id === id ? {...t, done: !t.done} : t);
-        save();
+        saveData();
     }
 
     function deleteTask(id) {
         tasks = tasks.filter(t => t.id !== id);
-        save();
+        saveData();
     }
 
-    function save() {
-        localStorage.setItem('SAQR_TASKS_V4', JSON.stringify(tasks));
+    function saveData() {
+        localStorage.setItem('SAQR_FINAL_DB', JSON.stringify(tasks));
         render();
     }
 
     function render() {
-        const today = new Date().toISOString().split('T')[0];
-        const todayList = document.getElementById('list-today');
-        const futureList = document.getElementById('list-future');
-
-        const todayTasks = tasks.filter(t => t.date === today);
-        const futureTasks = tasks.filter(t => t.date > today);
-
-        const doneCount = todayTasks.filter(t => t.done).length;
-        document.getElementById('completionRate').innerText = `إنجاز اليوم: ${doneCount} من ${todayTasks.length}`;
-
-        todayList.innerHTML = todayTasks.map(t => itemTemplate(t)).join('') || "<p style='text-align:center; color:#444;'>لا يوجد مهام لليوم</p>";
-        futureList.innerHTML = "<h4 style='color:var(--gold)'>المهام القادمة:</h4>" + futureTasks.map(t => itemTemplate(t)).join('');
-    }
-
-    function itemTemplate(t) {
-        return `
+        const area = document.getElementById('list-today');
+        area.innerHTML = tasks.map(t => `
             <div class="task-item ${t.done ? 'done' : ''}">
                 <div class="task-text ${t.done ? 'striked' : ''}" onclick="toggleDone(${t.id})">
                     <h4>${t.done ? '✅' : '⬜'} ${t.name}</h4>
-                    <span style="font-size:12px; color:#888;">⏰ ${t.time} | ${t.date}</span>
+                    <span style="font-size:12px; color:#888;">${t.time} | ${t.date}</span>
                 </div>
                 <button onclick="deleteTask(${t.id})" style="background:none; border:none; color:var(--red); cursor:pointer;">🗑️</button>
             </div>
-        `;
+        `).join('');
     }
 
     function switchPage(p) {
         document.querySelectorAll('.page').forEach(pg => pg.classList.remove('active-page'));
-        document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
         document.getElementById('page-'+p).classList.add('active-page');
-        document.getElementById('nav-'+p).classList.add('active');
-        render();
     }
 </script>
 </body>
